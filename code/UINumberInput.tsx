@@ -20,7 +20,7 @@ const NumberInput = styled.input`
   font-size: 9px;
   tab-size: 4;
   font-family: "IBMPlexMono-Medium", "IBM Plex Mono Medium";
-  -webkit-text-fill-color: #777777;
+  color: ${props => (props.focus ? "black" : "#777777")};
   font-size: 10px;
   letter-spacing: 0px;
   line-height: 1.2;
@@ -30,10 +30,10 @@ const NumberInput = styled.input`
   border: none;
 `;
 
-const TextField = styled(Base)`
+const Text = styled(Base)`
   tab-size: 4;
   font-family: "IBMPlexMono-Medium", "IBM Plex Mono Medium";
-  -webkit-text-fill-color: #777777;
+  color: ${props => (props.focus ? "black" : "#777777")};
   font-size: 7px;
   letter-spacing: 0px;
   line-height: 1.5;
@@ -41,11 +41,15 @@ const TextField = styled(Base)`
 `;
 
 export const UINumberInput = ({ label }) => {
+  const [focus, setFocus] = React.useState(false);
+  const border = focus
+    ? "1px solid black"
+    : "1px solid #777";
   return (
     <Stack
       alignment="center"
       background="none"
-      border="1px solid #000000"
+      border={border}
       direction="horizontal"
       distribution="space-around"
       height={17}
@@ -65,10 +69,18 @@ export const UINumberInput = ({ label }) => {
         min="0"
         max="100"
         step="5"
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+        focus={focus}
       />
-      <TextField height="60%" width="18%" id="label">
+      <Text
+        height="60%"
+        width="18%"
+        id="label"
+        focus={focus}
+      >
         {label}
-      </TextField>
+      </Text>
     </Stack>
   );
 };
@@ -76,9 +88,13 @@ export const UINumberInput = ({ label }) => {
 UINumberInput.defaultProps = {
   width: 45,
   height: 17,
-  label: "."
+  label: ".",
+  type: "number"
 };
 
 addPropertyControls(UINumberInput, {
-  circle: { type: ControlType.Boolean, title: "Circle" }
+  label: {
+    type: ControlType.String,
+    title: "Label"
+  }
 });
