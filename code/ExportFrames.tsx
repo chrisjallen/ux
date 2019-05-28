@@ -1,25 +1,27 @@
 import * as React from "react";
-import {
-  Frame,
-  PropertyControls,
-  ControlType,
-  FrameProps,
-  addPropertyControls
-} from "framer";
+import Clipboard from "react-clipboard.js";
 import * as reactElementToJSXString from "react-element-to-jsx-string";
+import {
+  ControlType,
+  addPropertyControls,
+  Stack
+} from "framer";
 import Highlight, {
   defaultProps
 } from "prism-react-renderer";
-import Clipboard from "react-clipboard.js";
-import { Stack } from "./Stack";
+import {
+  parseBackground,
+  parseRadius,
+  parseDeg,
+  populate,
+  select,
+  parsePercent
+} from "./utils";
 
-export const ExportFrames = props => {
+export function ExportFrames(props) {
   const { content } = props;
   if (!content[0]) return <NoTarget />;
-  const [
-    parsedTargets,
-    parsedCodeString
-  ] = useFramerConversion(content);
+  const exportString = useExport(content);
   return (
     <div
       style={{
@@ -33,7 +35,7 @@ export const ExportFrames = props => {
     >
       <Highlight
         {...defaultProps}
-        code={parsedCodeString}
+        code={exportString}
         language="jsx"
       >
         {({
@@ -57,7 +59,7 @@ export const ExportFrames = props => {
         )}
       </Highlight>
       <Clipboard
-        data-clipboard-text={parsedCodeString}
+        data-clipboard-text={exportString}
         style={{
           cursor: "pointer",
           backgroundColor: "none",
@@ -72,10 +74,9 @@ export const ExportFrames = props => {
       >
         Copy to Clipboard!!
       </Clipboard>
-      {/* <RenderOldVersion {...props} /> */}
     </div>
   );
-};
+}
 
 const NoTarget = () => {
   return (
@@ -107,72 +108,86 @@ ExportFrames.defaultProps = {
   target: null,
   tabStop: 2,
   defaultProps: true,
-  theme: "nightOwl"
+  theme: "nightOwl",
+  collapseContainers: false
 };
 
 addPropertyControls(ExportFrames, {
   content: {
     type: ControlType.ComponentInstance,
     title: "Component"
+  },
+  collapseContainers: {
+    type: ControlType.Boolean,
+    title: "Collapse Component Containers",
+    enabledTitle: "Collapse",
+    disabledTitle: "Expose"
   }
 });
 
-// Utils
-
-const useFramerConversion = inProps => {
+const useExport = props => {
   const StackC = <Stack />;
-  const composeComponentProps = (
-    component,
-    parent = {},
-    variant = null
-  ) => ({
-    ...component,
-    props: populate({
-      ...parseFrameProps(
-        component.props,
-        parent.props,
-        variant
-      ),
-      children: (component.props.children || [])
-        .map(c => composeChildProps(c, component))
-        .filter(t => t)
-    })
-  });
-  // second parse, looking for stacks and merging
-  const composeChildProps = (component, parent = {}) => {
-    if (
-      component.type.name === "ComponentContainer" &&
-      component.props.componentIdentifier === "framer/Stack"
-    ) {
-      return {
-        ...StackC,
-        props: populate({
-          ...parseStackProps(component.props, parent.props),
-          children: (
-            component.props.children[0].props.children || []
-          )
-            .map(c =>
-              composeComponentProps(
-                c,
-                component,
-                "stackChild"
-              )
-            )
-            .filter(t => t)
-        })
-      };
-    } else {
-      return composeComponentProps(component, parent);
-    }
-  };
-  const parsedTargets = inProps
-    .map(t => composeComponentProps(t))
+  console.log(StackC);
+  console.log("hello there");
+  const reactEls = props
+    .map(t => composeComponentProps(t, {}, null, StackC))
     .filter(t => t);
   const parsedCodeString = reactElementToJSXString(
-    parsedTargets[0],
-    inProps
+    reactEls[0],
+    props
   );
-  return [parsedTargets, parsedCodeString];
+  return parsedCodeString;
+};
+
+const composeComponentProps = (
+  component,
+  parent = {},
+  variant = null,
+  StackC = {}
+) => ({
+  ...component,
+  props: populate({
+    ...parseFrameProps(
+      component.props,
+      parent.props,
+      variant
+    ),
+    children: (component.props.children || [])
+      .map(c => composeChildProps(c, component, StackC))
+      .filter(t => t)
+  })
+});
+
+const composeChildProps = (
+  component,
+  parent = {},
+  StackC
+) => {
+  if (
+    component.type.name === "ComponentContainer" &&
+    component.props.componentIdentifier === "framer/Stack"
+  ) {
+    return {
+      ...StackC,
+      props: populate({
+        ...parseStackProps(component.props, parent.props),
+        children: (
+          component.props.children[0].props.children || []
+        )
+          .map(c =>
+            composeComponentProps(
+              c,
+              component,
+              "stackChild",
+              StackC
+            )
+          )
+          .filter(t => t)
+      })
+    };
+  } else {
+    return composeComponentProps(component, parent);
+  }
 };
 
 const parseStackProps = (
@@ -213,7 +228,6 @@ const parseFrameProps = (
     _border = {},
     visible
   } = currentProps;
-  // console.log(currentProps);
   let props = select(
     ({
       top,
@@ -282,122 +296,3 @@ const parseFrameProps = (
     background: parseBackground(currentProps)
   });
 };
-
-// Helpers
-const noop = function() {};
-const select = (
-  selector,
-  defaultValue = null,
-  log = true
-) => {
-  return (...val) => {
-    try {
-      return selector(...val);
-    } catch (e) {
-      if (log) console.log(e);
-      return defaultValue;
-    }
-  };
-};
-const populate = obj => {
-  const populateObj = {};
-  const filteredKeys = Object.keys(obj).filter(
-    key => obj[key]
-  );
-  filteredKeys.forEach(
-    key => (populateObj[key] = obj[key])
-  );
-  return populateObj;
-};
-
-// Parsers
-
-const parseDeg = select(val =>
-  isNaN(val) ? Number((val || "").split("deg")[0]) : val
-);
-
-const parsePercent = select(val =>
-  Number(val.split("%")[0])
-);
-
-const parsePx = select(val =>
-  Number((val || "").split("px")[0])
-);
-
-const parseRadius = select((val = "") => {
-  return val.includes("%") ? val : parsePx(val);
-});
-
-const parseBackground = currentProps => {
-  let { background } = currentProps;
-  const b = background || {
-    r: 0,
-    b: 100,
-    g: 0,
-    a: 0.5,
-    format: "rgba",
-    alpha: 1
-  };
-
-  switch (b.fit || b.__class || b.format) {
-    case "LinearGradient": {
-      return {
-        alpha: b.alpha,
-        angle: b.angle,
-        start: b.start,
-        end: b.end
-      };
-    }
-    case "fill": {
-      return {
-        src: b.src
-      };
-    }
-    case "fit": {
-      return {
-        src: b.src
-      };
-    }
-    case "stretch": {
-      return {
-        src: b.src
-      };
-    }
-    default:
-      return b.initialValue;
-  }
-};
-
-//
-// const OldVersion = props => {
-//   const codeString = reactElementToJSXString(
-//     props.content[0],
-//     props
-//   );
-//   if (!props.content[0]) return <NoTarget />;
-//   return (
-//     <Highlight
-//       {...defaultProps}
-//       code={codeString}
-//       language="jsx"
-//     >
-//       {({
-//         className,
-//         style,
-//         tokens,
-//         getLineProps,
-//         getTokenProps
-//       }) => (
-//         <pre className={className} style={style}>
-//           {tokens.map((line, i) => (
-//             <div {...getLineProps({ line, key: i })}>
-//               {line.map((token, key) => (
-//                 <span {...getTokenProps({ token, key })} />
-//               ))}
-//             </div>
-//           ))}
-//         </pre>
-//       )}
-//     </Highlight>
-//   );
-// };
