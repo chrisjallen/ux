@@ -41,8 +41,7 @@ export const parseRadius = select((val = "") => {
   return val.includes("%") ? val : parsePx(val);
 });
 
-export const parseBackground = currentProps => {
-  let { background } = currentProps;
+export const parseBackground = background => {
   const b = background || {
     r: 0,
     b: 100,
@@ -79,4 +78,34 @@ export const parseBackground = currentProps => {
     default:
       return b.initialValue;
   }
+};
+
+export const cssConvert = jsonCss => {
+  const styleString = Object.entries(jsonCss).reduce(
+    (styleString, [propName, propValue]) => {
+      return `${styleString}${propName}:${propValue};`;
+    },
+    ""
+  );
+  return styleString.replace(
+    /([A-Z])/g,
+    matches => `-${matches[0].toLowerCase()}`
+  );
+};
+
+export const extractHTMLStyles = (htmlText = "") => {
+  const text = `${htmlText}`.replace(/&quot\;/g, (a, b) => {
+    return "'";
+  });
+  return (text.match(/style=\".*?\"/gi) || [])
+    .join("")
+    .substring(7);
+};
+
+export const extractHTMLText = (htmlText = "") => {
+  // const text = `${htmlText}`.replace(/&quot\;/g, (a, b) => {
+  //   return "'";
+  // });
+  console.log(htmlText);
+  return (htmlText.match(/style=".*?">.*?</gi) || [])[1];
 };
