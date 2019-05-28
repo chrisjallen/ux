@@ -28,6 +28,7 @@ const NumberInput = styled.input`
   color: #777777;
   outline: none;
   border: none;
+  display: block;
 `;
 
 const Text = styled(Base)`
@@ -93,6 +94,53 @@ UINumberInput.defaultProps = {
 };
 
 addPropertyControls(UINumberInput, {
+  label: {
+    type: ControlType.String,
+    title: "Label"
+  }
+});
+
+export function UINumberInput2({ label }) {
+  const [focus, setFocus] = React.useState(false);
+  const border = focus
+    ? "1px solid black"
+    : "0px solid #777";
+  return (
+    <Frame
+      background="white"
+      height={27}
+      overflow="visible"
+      width={40}
+      border={border}
+    >
+      <Text height="11px" right="1px" focus={focus}>
+        {label}
+      </Text>
+      <NumberInput
+        height="12px"
+        left="5px"
+        width="33px"
+        min="0"
+        max="100"
+        step="5"
+        type="number"
+        placeholder={100}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+        focus={focus}
+      />
+    </Frame>
+  );
+}
+
+UINumberInput2.defaultProps = {
+  width: 40,
+  height: 27,
+  label: "L",
+  type: "number"
+};
+
+addPropertyControls(UINumberInput2, {
   label: {
     type: ControlType.String,
     title: "Label"

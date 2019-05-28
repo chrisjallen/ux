@@ -35,8 +35,9 @@ export function UIBoxModelInput({ options, label }) {
       />
       <Frame
         bottom={0}
-        width={56}
+        width={56 - 9 * 2}
         height={9}
+        left={9}
         id="pinBottom"
         visible
         background={model.bottom ? "#999" : "#BBB"}
@@ -45,7 +46,8 @@ export function UIBoxModelInput({ options, label }) {
       <Frame
         height={9}
         id="pinTop"
-        width={56}
+        width={56 - 9 * 2}
+        left={9}
         visible
         background={model.top ? "#999" : "#BBB"}
         onClick={() => setModel({ top: !model.top })}
