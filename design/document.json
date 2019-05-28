@@ -80,13 +80,7 @@
         "clip" : true,
         "codeComponentIdentifier" : ".\/ExportFrames.tsx_ExportFrames",
         "codeComponentProps" : {
-          "content" : [
-            {
-              "enabled" : true,
-              "type" : "componentinstance",
-              "value" : "EGfxxMklo"
-            }
-          ]
+
         },
         "codeOverrideEnabled" : false,
         "constraintsLocked" : false,
@@ -1940,8 +1934,8 @@
             "__class" : "CodeComponentNode",
             "aspectRatio" : null,
             "bottom" : null,
-            "centerAnchorX" : 0.25330396475770928,
-            "centerAnchorY" : 0.36466165413533835,
+            "centerAnchorX" : 0.24889867841409691,
+            "centerAnchorY" : 0.19172932330827067,
             "children" : [
 
             ],
@@ -1972,10 +1966,10 @@
             "fillType" : "color",
             "height" : 17,
             "heightType" : 0,
-            "id" : "N4nbbzPPU",
+            "id" : "HKz0y1X8j",
             "intrinsicHeight" : 17,
-            "intrinsicWidth" : 39,
-            "left" : 38,
+            "intrinsicWidth" : 45,
+            "left" : 34,
             "locked" : false,
             "name" : null,
             "opacity" : 1,
@@ -1991,9 +1985,9 @@
             "radiusTopRight" : 0,
             "right" : null,
             "rotation" : 0,
-            "top" : 40,
+            "top" : 17,
             "visible" : true,
-            "width" : 39,
+            "width" : 45,
             "widthType" : 0
           }
         ],
