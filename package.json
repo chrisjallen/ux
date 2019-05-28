@@ -1,0 +1,27 @@
+{
+	"main": "dist/index.js",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/react": "^16.8"
+	},
+	"peerDependencies": {
+		"framer": "^1.0 || ^1.0.0-beta",
+		"react": "^16.8"
+	},
+	"framer": {
+		"id": "e6f19a43-8606-4cf0-bd6f-b394b553bef1"
+	},
+	"author": "Chris Allen",
+	"dependencies": {
+		"@framer/alnikitin.ant-components": "^1.2.0",
+		"@framer/benjamin.properties": "^1.5.0",
+		"@framer/benjamin.web-fonts": "^1.7.0",
+		"@framer/jake_davies.shmeasure": "^1.2.0",
+		"@framer/lucasritter.atlassian-atlaskit": "^1.4.0",
+		"@framer/steveruizok.framespy": "^1.2.0",
+		"prism-react-renderer": "^0.1.6",
+		"react-clipboard.js": "^2.0.7",
+		"react-element-to-jsx-string": "^14.0.2",
+		"styled-components": "^4.2.0"
+	}
+}
