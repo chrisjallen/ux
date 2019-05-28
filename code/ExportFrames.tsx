@@ -15,11 +15,11 @@ import { Stack } from "./Stack";
 
 export const ExportFrames = props => {
   const { content } = props;
+  if (!content[0]) return <NoTarget />;
   const [
     parsedTargets,
     parsedCodeString
   ] = useFramerConversion(content);
-  if (!content[0]) return <NoTarget />;
   return (
     <div
       style={{

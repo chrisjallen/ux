@@ -29,6 +29,7 @@ const NumberInput = styled.input`
   outline: none;
   border: none;
   display: block;
+  background: transparent;
 `;
 
 const Text = styled(Base)`
@@ -41,7 +42,7 @@ const Text = styled(Base)`
   font-weight: 400;
 `;
 
-export const UINumberInput = ({ label }) => {
+export function UINumberInput({ label }) {
   const [focus, setFocus] = React.useState(false);
   const border = focus
     ? "1px solid black"
@@ -49,7 +50,7 @@ export const UINumberInput = ({ label }) => {
   return (
     <Stack
       alignment="center"
-      background="none"
+      background="transparent"
       border={border}
       direction="horizontal"
       distribution="space-around"
@@ -84,7 +85,7 @@ export const UINumberInput = ({ label }) => {
       </Text>
     </Stack>
   );
-};
+}
 
 UINumberInput.defaultProps = {
   width: 45,
@@ -107,11 +108,10 @@ export function UINumberInput2({ label }) {
     : "0px solid #777";
   return (
     <Frame
-      background="white"
+      background="transparent"
       height={27}
       overflow="visible"
       width={40}
-      border={border}
     >
       <Text height="11px" right="1px" focus={focus}>
         {label}
@@ -124,7 +124,7 @@ export function UINumberInput2({ label }) {
         max="100"
         step="5"
         type="number"
-        placeholder={100}
+        placeholder={0}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         focus={focus}
