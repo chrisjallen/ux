@@ -253,15 +253,6 @@ const parseFrameProps = (
     });
   }, {})();
 
-  // if (variant === "stackChild") {
-  //   props = {
-  //     ...props,
-  //     x: null,
-  //     y: null,
-  //     top: null,
-  //     bottom: null
-  //   };
-  // }
   const styleProps = select(() => {
     const { style = {} } = currentProps;
     return populate({
@@ -297,11 +288,15 @@ const parseFrameProps = (
   }, {})();
 
   const rawTextProps = select(() => {
+    if (currentProps.name === "labels") {
+      console.log(currentProps);
+      const html = stateToHTML(currentProps.contentState);
+      debugger;
+    }
     const textProps = {
       rawCss: extractHTMLStyles(currentProps.rawHTML || ""),
       inner: extractHTMLText(currentProps.rawHTML || "")
     };
-    // console.log(textProps.inner);
     return textProps;
   }, {})();
 
@@ -327,33 +322,3 @@ const parseFrameProps = (
     // css: cssConvert(props)
   };
 };
-
-// Parsers
-
-// const parseStackProps = (
-//   currentProps,
-//   parentProps = {}
-// ) => {
-//   const {
-//     direction = "vertical",
-//     distribution = "space-around",
-//     alignment = "center",
-//     style = {},
-//     padding,
-//     gap
-//   } = currentProps.children[0].props;
-//   const childProps = currentProps.children[0]
-//     ? currentProps.children[0].props
-//     : {};
-//   return populate({
-//     ...parseFrameProps(currentProps, parentProps),
-//     ...parseFrameProps(childProps, currentProps),
-//     id: currentProps.name || currentProps.id,
-//     direction,
-//     distribution,
-//     overflow: style.overflow,
-//     padding,
-//     gap,
-//     alignment
-//   });
-// };

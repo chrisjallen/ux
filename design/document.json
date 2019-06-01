@@ -3636,9 +3636,7 @@
         "top" : 997,
         "visible" : true,
         "width" : 183,
-        "widthType" : 0,
-        "x" : 414,
-        "y" : 1343
+        "widthType" : 0
       },
       {
         "__class" : "TextNode",
@@ -4163,9 +4161,7 @@
         "top" : 452,
         "visible" : true,
         "width" : 183,
-        "widthType" : 0,
-        "x" : 414,
-        "y" : 1343
+        "widthType" : 0
       }
     ],
     "id" : "z6iirCuIZ",
