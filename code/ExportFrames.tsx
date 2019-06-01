@@ -3,7 +3,6 @@ import Clipboard from "react-clipboard.js";
 import * as reactElementToJSXString from "react-element-to-jsx-string";
 import { Stack as Stacker } from "./Stack";
 import { stateToHTML } from "draft-js-export-html";
-
 import {
   ControlType,
   addPropertyControls,
@@ -201,6 +200,7 @@ const composeChild = (component, parent, collapse) => {
       ...Child.props,
       ...component.defaultProps,
       ...component.props,
+      ...component.props.children[0],
       children: Child.props.children
     };
     return composeComponent(Child, parent, collapse);
@@ -305,7 +305,14 @@ const parseFrameProps = (
     return textProps;
   }, {})();
 
+  // Exclude any unwanted custom props here
+  const ownProps = select(() => {
+    const { ...rest } = currentProps.props;
+    return rest;
+  }, {})();
+
   const props = populate({
+    ...ownProps,
     ...defaults,
     ...positionProps,
     ...styleProps,
@@ -315,8 +322,8 @@ const parseFrameProps = (
   });
 
   return {
-    id: currentProps.name || currentProps.id,
-    ...props
+    ...props,
+    id: currentProps.name || currentProps.id
     // css: cssConvert(props)
   };
 };

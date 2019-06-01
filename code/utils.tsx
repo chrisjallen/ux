@@ -16,8 +16,8 @@ export const select = (
 
 export const populate = obj => {
   const populateObj = {};
-  const filteredKeys = Object.keys(obj).filter(
-    key => obj[key]
+  const filteredKeys = Object.keys(obj).filter(key =>
+    isNaN(parseInt(obj[key])) ? obj[key] : true
   );
   filteredKeys.forEach(
     key => (populateObj[key] = obj[key])
